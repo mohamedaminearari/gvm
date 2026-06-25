@@ -1,40 +1,44 @@
 /*
 Copyright © 2026 NAME HERE <EMAIL ADDRESS>
-
 */
 package cmd
 
 import (
 	"fmt"
+	"strings"
 
+	"github.com/mohamedaminearari/gvm/internal/store"
 	"github.com/spf13/cobra"
 )
 
 // lsCmd represents the ls command
 var lsCmd = &cobra.Command{
 	Use:   "ls",
-	Short: "A brief description of your command",
-	Long: `A longer description that spans multiple lines and likely contains examples
-and usage of using your command. For example:
+	Short: "list all locally installed Godot versions",
+	Long:  `Displays all versions of Godot that are currently installed in ~/.gvm/versions/.`,
+	Args:  cobra.NoArgs,
+	RunE: func(cmd *cobra.Command, args []string) error {
+		versions, err := store.ListInstalledVersions()
+		if err != nil {
+			return fmt.Errorf("failed to list installed versions: %v", err)
+		}
 
-Cobra is a CLI library for Go that empowers applications.
-This application is a tool to generate the needed files
-to quickly create a Cobra application.`,
-	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println("ls called")
+		if len(versions) == 0 {
+			fmt.Println("No Godot versions installed.")
+			fmt.Println("Run 'gvm ls-remote' to see available versions.")
+			return nil
+		}
+
+		fmt.Println("Installed Godot versions:")
+		fmt.Println(strings.Repeat("-", 50))
+
+		for _, version := range versions {
+			fmt.Printf("  %s\n", version)
+		}
+		return nil
 	},
 }
 
 func init() {
 	rootCmd.AddCommand(lsCmd)
-
-	// Here you will define your flags and configuration settings.
-
-	// Cobra supports Persistent Flags which will work for this command
-	// and all subcommands, e.g.:
-	// lsCmd.PersistentFlags().String("foo", "", "A help for foo")
-
-	// Cobra supports local flags which will only run when this command
-	// is called directly, e.g.:
-	// lsCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
 }

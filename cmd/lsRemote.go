@@ -57,9 +57,9 @@ var lsRemoteCmd = &cobra.Command{
 		for _, release := range filtered {
 			version := strings.TrimPrefix(release.TagName, "v")
 			if release.Prerelease {
-				fmt.Printf("%s (pre-release)\n", version)
+				fmt.Printf("  %s (pre-release)\n", version)
 			} else {
-				fmt.Printf("%s\n", version)
+				fmt.Printf("  %s\n", version)
 			}
 		}
 
