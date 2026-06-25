@@ -13,7 +13,7 @@ import (
 // uninstallCmd represents the uninstall command
 var uninstallCmd = &cobra.Command{
 	Use:   "uninstall <version>",
-	Short: "uninstall a specific Godot version ",
+	Short: "Uninstall a specific Godot version ",
 	Long:  `Removes an installed version of Godot from ~/.gvm/versions/.`,
 	Args:  cobra.ExactArgs(1),
 	RunE: func(cmd *cobra.Command, args []string) error {

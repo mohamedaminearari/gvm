@@ -14,7 +14,7 @@ import (
 // lsCmd represents the ls command
 var lsCmd = &cobra.Command{
 	Use:   "ls",
-	Short: "list all locally installed Godot versions",
+	Short: "List all locally installed Godot versions",
 	Long:  `Displays all versions of Godot that are currently installed in ~/.gvm/versions/.`,
 	Args:  cobra.NoArgs,
 	RunE: func(cmd *cobra.Command, args []string) error {

@@ -23,7 +23,7 @@ const (
 // installCmd represents the install command
 var installCmd = &cobra.Command{
 	Use:   "install <version>",
-	Short: "install a specific Godot version",
+	Short: "Install a specific Godot version",
 	Long:  `Downloads and installs a specific version of Godot into ~/.gvm/versions/.`,
 	Args:  cobra.ExactArgs(1),
 	RunE: func(cmd *cobra.Command, args []string) error {
