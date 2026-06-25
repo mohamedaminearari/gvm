@@ -110,3 +110,12 @@ func FilterByAssetSuffix(releases []Release, suffix string) []Release {
 	}
 	return filtered
 }
+
+func FindReleaseByVersion(releases []Release, version string) (Release, bool) {
+	for _, release := range releases {
+		if release.TagName == version {
+			return release, true
+		}
+	}
+	return Release{}, false
+}
