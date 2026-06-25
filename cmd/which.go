@@ -1,40 +1,44 @@
 /*
 Copyright © 2026 NAME HERE <EMAIL ADDRESS>
-
 */
 package cmd
 
 import (
 	"fmt"
 
+	"github.com/mohamedaminearari/gvm/internal/store"
 	"github.com/spf13/cobra"
 )
 
 // whichCmd represents the which command
 var whichCmd = &cobra.Command{
-	Use:   "which",
-	Short: "A brief description of your command",
-	Long: `A longer description that spans multiple lines and likely contains examples
-and usage of using your command. For example:
+	Use:   "which <version>",
+	Short: "Show the path to a specific Godot Version's executable",
+	Long:  `Prints the full path to the Godot executable for the given version.`,
+	Args:  cobra.ExactArgs(1),
+	RunE: func(cmd *cobra.Command, args []string) error {
+		version := args[0]
 
-Cobra is a CLI library for Go that empowers applications.
-This application is a tool to generate the needed files
-to quickly create a Cobra application.`,
-	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println("which called")
+		installed, err := store.IsVersionInstalled(version)
+		if err != nil {
+			return err
+		}
+
+		if !installed {
+			return fmt.Errorf("version %s is not installed, run 'gvm install %s' to install it", version, version)
+		}
+
+		binaryPath, err := store.FindBinary(version)
+		if err != nil {
+			return fmt.Errorf("could not find binary for version %s: %v", version, err)
+		}
+
+		fmt.Println(binaryPath)
+
+		return nil
 	},
 }
 
 func init() {
 	rootCmd.AddCommand(whichCmd)
-
-	// Here you will define your flags and configuration settings.
-
-	// Cobra supports Persistent Flags which will work for this command
-	// and all subcommands, e.g.:
-	// whichCmd.PersistentFlags().String("foo", "", "A help for foo")
-
-	// Cobra supports local flags which will only run when this command
-	// is called directly, e.g.:
-	// whichCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
 }

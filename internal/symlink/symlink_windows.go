@@ -29,7 +29,7 @@ func Set(version string) error {
 		return err
 	}
 
-	binaryPath, err := findBinary(version)
+	binaryPath, err := store.FindBinary(version)
 	if err != nil {
 		return err
 	}
@@ -69,27 +69,6 @@ func Current() (string, error) {
 	}
 
 	return version, nil
-}
-
-func findBinary(version string) (string, error) {
-	versionDir, err := store.VersionDir(version)
-	if err != nil {
-		return "", err
-	}
-
-	entries, err := os.ReadDir(versionDir)
-	if err != nil {
-		return "", fmt.Errorf("failed to read version directory: %v", err)
-	}
-
-	for _, entry := range entries {
-		name := entry.Name()
-		if strings.HasSuffix(name, ".exe") && !strings.Contains(name, "console") {
-			return filepath.Join(versionDir, name), nil
-		}
-	}
-
-	return "", fmt.Errorf("could not find Godot executable in version directory for %s", version)
 }
 
 func parseVersionFormat(content string) (string, error) {

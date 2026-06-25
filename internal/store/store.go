@@ -6,6 +6,7 @@ import (
 	"io"
 	"os"
 	"path/filepath"
+	"runtime"
 	"strings"
 )
 
@@ -180,4 +181,40 @@ func DeleteVersion(version string) error {
 		return fmt.Errorf("failed to delete version %s: %v", version, err)
 	}
 	return nil
+}
+
+func FindBinary(version string) (string, error) {
+	versionDir, err := VersionDir(version)
+	if err != nil {
+		return "", err
+	}
+
+	entries, err := os.ReadDir(versionDir)
+	if err != nil {
+		return "", fmt.Errorf("failed to read version directory: %v", err)
+	}
+
+	for _, entry := range entries {
+		if entry.IsDir() {
+			continue
+		}
+		name := entry.Name()
+
+		switch runtime.GOOS {
+		case "windows":
+			if strings.HasSuffix(name, ".exe") && !strings.Contains(name, "console") {
+				return filepath.Join(versionDir, name), nil
+			}
+		default:
+			info, err := entry.Info()
+			if err != nil {
+				continue
+			}
+			if !strings.Contains(name, ".") && (info.Mode()&0111 != 0) {
+				return filepath.Join(versionDir, name), nil
+			}
+		}
+	}
+
+	return "", fmt.Errorf("could not find Godot executable in version directory for %s", version)
 }
