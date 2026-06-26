@@ -14,7 +14,7 @@ import (
 
 // runCmd represents the run command
 var runCmd = &cobra.Command{
-	Use:   "run <version>",
+	Use:   "run <version> [args...]",
 	Short: "Run a specific Godot version without switching the active version",
 	Long:  `Launches a specific version of Godot directly as a subprocess, forwarding any additional arguments to Godot.`,
 	Args:  cobra.MinimumNArgs(1),
