@@ -210,7 +210,7 @@ func FindBinary(version string) (string, error) {
 			if err != nil {
 				continue
 			}
-			if !strings.Contains(name, ".") && (info.Mode()&0111 != 0) {
+			if info.Mode()&0111 != 0 {
 				return filepath.Join(versionDir, name), nil
 			}
 		}
