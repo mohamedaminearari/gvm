@@ -12,7 +12,7 @@ import (
 )
 
 const (
-	batFileName = "current.bat"
+	batFileName = "godot.bat"
 )
 
 func Set(version string) error {

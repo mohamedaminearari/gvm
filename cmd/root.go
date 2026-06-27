@@ -15,15 +15,15 @@ var rootCmd = &cobra.Command{
 It allows you to install, switch, and manage Godot versions on Windows, Linux, and macOS, modeled after nvm (Node Version Manager)
 
 Examples:
-	gvm ls-remote						List all available Godot versions for your OS
-	gvm install 4.3-stable				Install a specific Godot version
-	gvm use 4.3-stable					Switch to an installed version
-	gvm current							Show the currently active version
-	gvm ls								List all locally installed versions
-	gvm uninstall 4.3-stable			Remove an installed version
-	gvm alias myproject 4.3-stable		Create a named alias for a version
-	gvm which 4.3-stable				Show the path to a version's executable
-	gvm run 4.3-stable					Launch a specific version directly`,
+	gvm ls-remote                   List all available Godot versions for your OS
+	gvm install 4.3-stable          Install a specific Godot version
+	gvm use 4.3-stable              Switch to an installed version
+	gvm current                     Show the currently active version
+	gvm ls                          List all locally installed versions
+	gvm uninstall 4.3-stable        Remove an installed version
+	gvm alias myproject 4.3-stable  Create a named alias for a version
+	gvm which 4.3-stable            Show the path to a version's executable
+	gvm run 4.3-stable              Launch a specific version directly`,
 }
 
 func Execute() {

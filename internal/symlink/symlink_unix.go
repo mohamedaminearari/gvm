@@ -10,12 +10,11 @@ import (
 	"github.com/mohamedaminearari/gvm/internal/store"
 )
 
-func Set(version string) error {
-	versionDir, err := store.VersionDir(version)
-	if err != nil {
-		return err
-	}
+const (
+	symlinkFileName = "godot"
+)
 
+func Set(version string) error {
 	installed, err := store.IsVersionInstalled(version)
 	if err != nil {
 		return err
@@ -29,7 +28,12 @@ func Set(version string) error {
 		return err
 	}
 
-	symlinkPath := filepath.Join(gvmDir, "current")
+	binaryPath, err := store.FindBinary(version)
+	if err != nil {
+		return err
+	}
+
+	symlinkPath := filepath.Join(gvmDir, symlinkFileName)
 
 	_, err = os.Lstat(symlinkPath)
 	if err == nil {
@@ -39,7 +43,7 @@ func Set(version string) error {
 		}
 	}
 
-	err = os.Symlink(versionDir, symlinkPath)
+	err = os.Symlink(binaryPath, symlinkPath)
 	if err != nil {
 		return fmt.Errorf("failed to create symlink: %v", err)
 	}
@@ -52,7 +56,7 @@ func Current() (string, error) {
 		return "", err
 	}
 
-	symlinkPath := filepath.Join(gvmDir, "current")
+	symlinkPath := filepath.Join(gvmDir, symlinkFileName)
 
 	_, err = os.Lstat(symlinkPath)
 	if os.IsNotExist(err) {
@@ -64,6 +68,6 @@ func Current() (string, error) {
 		return "", fmt.Errorf("failed to read symlink: %v", err)
 	}
 
-	version := filepath.Base(target)
+	version := filepath.Base(filepath.Dir(target))
 	return version, nil
 }
