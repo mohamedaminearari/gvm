@@ -15,7 +15,7 @@ var includePrerelease bool
 var lsRemoteCmd = &cobra.Command{
 	Use:   "ls-remote",
 	Short: "List available Godot versions from Github",
-	Long:  `Fetches and displayes all available Godot versions for your current OS and architecture.`,
+	Long:  `Fetches and displays all available Godot versions for your current OS and architecture.`,
 	RunE: func(cmd *cobra.Command, args []string) error {
 		info := platform.Detect()
 
