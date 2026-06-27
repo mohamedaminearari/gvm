@@ -19,6 +19,16 @@ var uninstallCmd = &cobra.Command{
 	RunE: func(cmd *cobra.Command, args []string) error {
 		version := args[0]
 
+		_, err := store.GetAlias(version)
+		if err == nil {
+			return fmt.Errorf(
+				"'%s' is an alias, not a version.\n"+
+					"  To delete an alias use 'gvm alias --delete %s'\n"+
+					"  To uninstall the version it points to, run 'gvm ls' to see installed versions.\n",
+				version, version,
+			)
+		}
+
 		installed, err := store.IsVersionInstalled(version)
 		if err != nil {
 			return err

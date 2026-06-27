@@ -19,6 +19,11 @@ var whichCmd = &cobra.Command{
 	RunE: func(cmd *cobra.Command, args []string) error {
 		version := args[0]
 
+		content, err := store.GetAlias(version)
+		if err == nil {
+			version = content
+		}
+
 		installed, err := store.IsVersionInstalled(version)
 		if err != nil {
 			return err

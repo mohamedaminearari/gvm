@@ -6,6 +6,7 @@ package cmd
 import (
 	"fmt"
 
+	"github.com/mohamedaminearari/gvm/internal/store"
 	"github.com/mohamedaminearari/gvm/internal/symlink"
 	"github.com/spf13/cobra"
 )
@@ -19,7 +20,12 @@ var useCmd = &cobra.Command{
 	RunE: func(cmd *cobra.Command, args []string) error {
 		version := args[0]
 
-		err := symlink.Set(version)
+		content, err := store.GetAlias(version)
+		if err == nil {
+			version = content
+		}
+
+		err = symlink.Set(version)
 		if err != nil {
 			return fmt.Errorf("failed to switch version: %v", err)
 		}
