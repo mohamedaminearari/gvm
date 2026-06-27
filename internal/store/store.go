@@ -218,3 +218,92 @@ func FindBinary(version string) (string, error) {
 
 	return "", fmt.Errorf("could not find Godot executable in version directory for %s", version)
 }
+
+func AliasDir() (string, error) {
+	gvmDir, err := GVMDir()
+	if err != nil {
+		return "", err
+	}
+	return filepath.Join(gvmDir, "alias"), nil
+}
+
+func SetAlias(name string, version string) error {
+	aliasDir, err := AliasDir()
+	if err != nil {
+		return err
+	}
+
+	aliasPath := filepath.Join(aliasDir, name)
+
+	err = os.WriteFile(aliasPath, []byte(version), 0644)
+	if err != nil {
+		return fmt.Errorf("failed to write alias %s: %v", name, err)
+	}
+
+	return nil
+}
+
+func GetAlias(name string) (string, error) {
+	aliasDir, err := AliasDir()
+	if err != nil {
+		return "", err
+	}
+
+	aliasPath := filepath.Join(aliasDir, name)
+
+	content, err := os.ReadFile(aliasPath)
+	if os.IsNotExist(err) {
+		return "", fmt.Errorf("alias %s does not exist", name)
+	} else if err != nil {
+		return "", fmt.Errorf("failed to read alias %s: %v", name, err)
+	}
+
+	return strings.TrimSpace(string(content)), nil
+}
+
+func DeleteAlias(name string) error {
+	aliasDir, err := AliasDir()
+	if err != nil {
+		return err
+	}
+
+	aliasPath := filepath.Join(aliasDir, name)
+
+	_, err = os.Stat(aliasPath)
+	if err != nil {
+		return fmt.Errorf("alias %s does not exist", name)
+	}
+
+	err = os.Remove(aliasPath)
+	if err != nil {
+		return fmt.Errorf("failed to delete alias %s: %v", name, err)
+	}
+	return nil
+}
+
+func ListAliases() (map[string]string, error) {
+	aliasDir, err := AliasDir()
+	if err != nil {
+		return nil, err
+	}
+
+	entries, err := os.ReadDir(aliasDir)
+	if os.IsNotExist(err) {
+		return map[string]string{}, nil
+	} else if err != nil {
+		return nil, fmt.Errorf("failed to read alias directory: %v", err)
+	}
+
+	aliases := make(map[string]string)
+	for _, entry := range entries {
+		if entry.IsDir() {
+			continue
+		}
+		version, err := GetAlias(entry.Name())
+		if err != nil {
+			continue
+		}
+		aliases[entry.Name()] = version
+	}
+	return aliases, nil
+}
