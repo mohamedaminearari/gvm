@@ -8,8 +8,9 @@ import (
 
 // rootCmd represents the base command when called without any subcommands
 var rootCmd = &cobra.Command{
-	Use:   "gvm",
-	Short: "Godot Version Manager - A CLI tool to manage multiple Godot engine versions",
+	Use:     "gvm",
+	Version: "v1.0.0",
+	Short:   "Godot Version Manager - A CLI tool to manage multiple Godot engine versions",
 	Long: `GVM is a cross-platform CLI tool for managing multiple versions of the Godot game engine.
 
 It allows you to install, switch, and manage Godot versions on Windows, Linux, and macOS, modeled after nvm (Node Version Manager)
