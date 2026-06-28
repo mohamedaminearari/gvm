@@ -45,6 +45,84 @@ func (r Release) FindAssetBySuffix(suffix string) (Asset, bool) {
 	return Asset{}, false
 }
 
+func FetchRelease(version string) (Release, error) {
+	url := fmt.Sprintf("%s/tags/%s", baseURL, version)
+
+	resp, err := http.Get(url)
+	if err != nil {
+		return Release{}, fmt.Errorf("failed to reach Github API: %v", err)
+	}
+	defer resp.Body.Close()
+
+	if resp.StatusCode == http.StatusNotFound {
+		return Release{}, fmt.Errorf("Version %s not found, run 'gvm ls-remote' to see available versions", version)
+	}
+
+	if resp.StatusCode == http.StatusForbidden {
+		return Release{}, fmt.Errorf("Github API rate limit exceeded, please wait a moment and try again")
+	}
+
+	if resp.StatusCode != http.StatusOK {
+		return Release{}, fmt.Errorf("Github API returned unexpected status: %s", resp.Status)
+	}
+
+	body, err := io.ReadAll(resp.Body)
+	if err != nil {
+		return Release{}, fmt.Errorf("failed to read Github API response: %v", err)
+	}
+
+	var release Release
+	err = json.Unmarshal(body, &release)
+	if err != nil {
+		return Release{}, fmt.Errorf("failed to parse Github API response: %v", err)
+	}
+
+	return release, nil
+}
+
+func FetchReleasesCustomPages(includePrerelease bool, page int, perPage int) ([]Release, error) {
+	url := fmt.Sprintf("%s?per_page=%d&page=%d", baseURL, perPage, page)
+
+	resp, err := http.Get(url)
+	if err != nil {
+		return nil, fmt.Errorf("failed to reach Github API: %v", err)
+	}
+	defer resp.Body.Close()
+
+	if resp.StatusCode == http.StatusForbidden {
+		return nil, fmt.Errorf("Github API rate limit exceeded, please wait a moment and try again")
+	}
+
+	if resp.StatusCode != http.StatusOK {
+		return nil, fmt.Errorf("Github API returned unexpected status: %s", resp.Status)
+	}
+
+	body, err := io.ReadAll(resp.Body)
+	if err != nil {
+		return nil, fmt.Errorf("failed to read Github API response: %v", err)
+	}
+
+	var releases []Release
+	err = json.Unmarshal(body, &releases)
+	if err != nil {
+		return nil, fmt.Errorf("failed to parse Github API response: %v", err)
+	}
+
+	var fileted []Release
+	for _, r := range releases {
+		if r.Draft {
+			continue
+		}
+
+		if r.Prerelease && !includePrerelease {
+			continue
+		}
+		fileted = append(fileted, r)
+	}
+
+	return fileted, nil
+}
+
 func FetchReleases(includePrerelease bool) ([]Release, error) {
 	var allReleases []Release
 	page := 1

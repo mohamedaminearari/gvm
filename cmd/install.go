@@ -41,7 +41,7 @@ var installCmd = &cobra.Command{
 
 		if version == "latest" {
 			fmt.Println("Fetching latest stable version from Github...")
-			releases, err := github.FetchReleases(false)
+			releases, err := github.FetchReleasesCustomPages(false, 1, 1)
 			if err != nil {
 				return fmt.Errorf("failed to fetch feleases: %v", err)
 			}
@@ -63,8 +63,18 @@ var installCmd = &cobra.Command{
 			return nil
 		}
 
-		fileName := fmt.Sprintf("Godot_v%s_%s", version, suffix)
-		downloadURL := fmt.Sprintf("%s/%s/%s", godotBuildsURL, version, fileName)
+		release, err := github.FetchRelease(version)
+		if err != nil {
+			return err
+		}
+
+		asset, found := release.FindAssetBySuffix(suffix)
+		if !found {
+			return fmt.Errorf("No build found for your platform: %s %s\n", info.OS, info.Arch)
+		}
+
+		fileName := asset.Name
+		downloadURL := asset.DownloadURL
 
 		err = store.Init()
 		if err != nil {
