@@ -12,7 +12,7 @@ import (
 var useCmd = &cobra.Command{
 	Use:   "use <version>",
 	Short: "Switch to a specific Godot version",
-	Long:  `Updates the active version of Godot by updating the symlink (or wrapper for Windows) in ~/.gvm/.`,
+	Long:  `Updates the active version of Godot by updating the symlink (or wrapper for Windows) in ~/.gvm/bin.`,
 	Args:  cobra.ExactArgs(1),
 	RunE: func(cmd *cobra.Command, args []string) error {
 		version := args[0]
@@ -28,7 +28,7 @@ var useCmd = &cobra.Command{
 		}
 
 		fmt.Printf("Now using Godot %s\n", version)
-		fmt.Println("Make sure ~/.gvm is in your PATH to use the 'godot' command.")
+		fmt.Println("Make sure ~/.gvm/bin is in your PATH to use the 'godot' command.")
 
 		return nil
 	},

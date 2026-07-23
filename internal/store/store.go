@@ -18,6 +18,14 @@ func GVMDir() (string, error) {
 	return filepath.Join(home, ".gvm"), nil
 }
 
+func BinDir() (string, error) {
+	gvmDir, err := GVMDir()
+	if err != nil {
+		return "", fmt.Errorf("could not find gvm directory: %v", err)
+	}
+	return filepath.Join(gvmDir, "bin"), nil
+}
+
 func TempDir() (string, error) {
 	gvmDir, err := GVMDir()
 	if err != nil {
@@ -50,6 +58,7 @@ func Init() error {
 
 	dirs := []string{
 		gvmDir,
+		filepath.Join(gvmDir, "bin"),
 		filepath.Join(gvmDir, "tmp"),
 		filepath.Join(gvmDir, "versions"),
 		filepath.Join(gvmDir, "alias"),

@@ -35,7 +35,7 @@ A cross-platform command-line tool for installing and managing multiple versions
 - **Fast** — written in Go for minimal overhead and quick installswd
 
 ## Installation
-Download the Latest version from the [releases page](https://github.com/mohamedaminearari/gvm/releases), then extract it where ever you want, add the directory where you extracted it to the PATH as well as the ~/.gvm directory.
+Download the Latest version from the [releases page](https://github.com/mohamedaminearari/gvm/releases), then extract it where ever you want, add the directory where you extracted it to the PATH as well as the ~/.gvm/bin directory.
 
 ## Usage
 ```

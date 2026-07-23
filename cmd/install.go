@@ -41,7 +41,7 @@ var installCmd = &cobra.Command{
 
 		if version == "latest" {
 			fmt.Println("Fetching latest stable version from Github...")
-			releases, err := github.FetchReleasesCustomPages(false, 1, 1)
+			releases, err := github.FetchReleasesCustomPages(false, 1, 10)
 			if err != nil {
 				return fmt.Errorf("failed to fetch feleases: %v", err)
 			}

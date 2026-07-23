@@ -11,7 +11,7 @@ import (
 var currentCmd = &cobra.Command{
 	Use:   "current",
 	Short: "Show the currently active Godot version",
-	Long:  `Displays the version of Godot that is currently active via the ~/.gvm symlink.`,
+	Long:  `Displays the version of Godot that is currently active via the ~/.gvm/bin symlink.`,
 	Args:  cobra.NoArgs,
 	RunE: func(cmd *cobra.Command, args []string) error {
 		version, err := symlink.Current()

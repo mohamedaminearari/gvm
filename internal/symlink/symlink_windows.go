@@ -24,7 +24,7 @@ func Set(version string) error {
 		return fmt.Errorf("version %s is not installed, run 'gvm install %s' to install it", version, version)
 	}
 
-	gvmDir, err := store.GVMDir()
+	binDir, err := store.BinDir()
 	if err != nil {
 		return err
 	}
@@ -35,7 +35,7 @@ func Set(version string) error {
 	}
 
 	batContent := fmt.Sprintf("@echo off\n\"%s\" %%*\n", binaryPath)
-	batPath := filepath.Join(gvmDir, batFileName)
+	batPath := filepath.Join(binDir, batFileName)
 
 	err = os.WriteFile(batPath, []byte(batContent), 0755)
 	if err != nil {
@@ -46,12 +46,12 @@ func Set(version string) error {
 }
 
 func Current() (string, error) {
-	gvmDir, err := store.GVMDir()
+	binDir, err := store.BinDir()
 	if err != nil {
 		return "", err
 	}
 
-	batPath := filepath.Join(gvmDir, batFileName)
+	batPath := filepath.Join(binDir, batFileName)
 
 	_, err = os.Stat(batPath)
 	if os.IsNotExist(err) {

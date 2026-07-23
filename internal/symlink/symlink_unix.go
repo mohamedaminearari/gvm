@@ -23,7 +23,7 @@ func Set(version string) error {
 		return fmt.Errorf("version %s is not installed, run 'gvm install %s' to install it", version, version)
 	}
 
-	gvmDir, err := store.GVMDir()
+	binDir, err := store.BinDir()
 	if err != nil {
 		return err
 	}
@@ -33,7 +33,7 @@ func Set(version string) error {
 		return err
 	}
 
-	symlinkPath := filepath.Join(gvmDir, symlinkFileName)
+	symlinkPath := filepath.Join(binDir, symlinkFileName)
 
 	_, err = os.Lstat(symlinkPath)
 	if err == nil {
@@ -51,12 +51,12 @@ func Set(version string) error {
 }
 
 func Current() (string, error) {
-	gvmDir, err := store.GVMDir()
+	binDir, err := store.BinDir()
 	if err != nil {
 		return "", err
 	}
 
-	symlinkPath := filepath.Join(gvmDir, symlinkFileName)
+	symlinkPath := filepath.Join(binDir, symlinkFileName)
 
 	_, err = os.Lstat(symlinkPath)
 	if os.IsNotExist(err) {
